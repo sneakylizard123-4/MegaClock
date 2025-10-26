@@ -62,15 +62,10 @@ void loop() {
 
     //Full Timestamp
     Serial.println(String("DateTime::TIMESTAMP_FULL:\t")+time.timestamp(DateTime::TIMESTAMP_FULL));
-    //Date Only
-    Serial.println(String("DateTime::TIMESTAMP_DATE:\t")+time.timestamp(DateTime::TIMESTAMP_DATE));
-    //Full Timestamp
-    Serial.println(String("DateTime::TIMESTAMP_TIME:\t")+time.timestamp(DateTime::TIMESTAMP_TIME));
     Serial.println();
 
     display.showNumberDecEx(time.hour(), 0b01000000, true, 2, 0); // Display hours with leading zero
     display.showNumberDec(time.minute(), true, 2, 2); // Display minutes with leading zero
-    delay(100);
 }
 
 void sevSegTest() {
