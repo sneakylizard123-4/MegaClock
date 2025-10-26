@@ -41,4 +41,23 @@ void loop() {
     delay(1000);
     display.setSegments(SEG_OUCH);
     delay(1000);
+    display.clear();
+    delay(1000);
+    
+    display.showNumberDec(1234, false, 4, 0);
+    delay(1000);
+    display.showNumberDec(56, true, 4, 0);
+    delay(1000);
+    display.showNumberDec(56, false, 4, 0);
+    delay(1000);
+
+    display.showNumberHexEx(0x1A3F, false, 4, 0); // Display hex with dots on 2nd and 4th digits
+    delay(1000);
+    display.showNumberHexEx(0xd1, 0, true);
+    delay(1000);
+    display.clear();
+    display.showNumberHexEx(0xd1, 0, true, 2);
+    delay(1000);
+
+    display.clear();
 }
