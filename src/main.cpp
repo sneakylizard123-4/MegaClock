@@ -50,6 +50,10 @@ void setup() {
 
     Serial.println("RTC Initialized.");
     //rtc.adjust(DateTime(2024, 10, 26, 11, 49, 15));
+
+    Serial.println("Initializing 7-Segment Display...");
+    display.setBrightness(0x0f); // Set maximum brightness
+    Serial.println("7-Segment Display Initialized.");
 }
 
 void loop() {
@@ -64,7 +68,12 @@ void loop() {
     Serial.println(String("DateTime::TIMESTAMP_TIME:\t")+time.timestamp(DateTime::TIMESTAMP_TIME));
     Serial.println();
 
-    display.setBrightness(0x0f); // Set maximum brightness
+    display.showNumberDecEx(time.hour(), 0b01000000, true, 2, 0); // Display hours with leading zero
+    display.showNumberDec(time.minute(), true, 2, 2); // Display minutes with leading zero
+    delay(100);
+}
+
+void sevSegTest() {
     display.setSegments(SEG_DONE);
     delay(1000);
     display.setSegments(SEG_TRUE);
@@ -88,6 +97,5 @@ void loop() {
     display.clear();
     display.showNumberHexEx(0xd1, 0, true, 2);
     delay(1000);
-
     display.clear();
 }
