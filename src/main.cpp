@@ -1,10 +1,12 @@
 #include <Arduino.h>
 #include <TM1637Display.h>
+#include <RTClib.h>
 
 #define CLK_PIN 2
 #define DIO_PIN 3
 
 TM1637Display display(CLK_PIN, DIO_PIN);
+RTC_DS1307 rtc;
 
 const uint8_t SEG_DONE[] = {
 	SEG_B | SEG_C | SEG_D | SEG_E | SEG_G,           // d
@@ -30,10 +32,38 @@ const uint8_t SEG_OUCH[] = {
 void setup() {
     Serial.begin(9600);
     Serial.println("MegaClock Starting...");
+    Serial.println("Initializing RTC...");
+
+    if (rtc.begin()) {
+        Serial.println("RTC Ok");
+    } else {
+        Serial.println("RTC not found.");
+        while(1);
+    }
+
+    if (rtc.isrunning()) {
+        Serial.println("RTC is running.");
+    } else{
+        Serial.println("RTC is NOT running, setting the time!");
+        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    }
+
+    Serial.println("RTC Initialized.");
+    //rtc.adjust(DateTime(2024, 10, 26, 11, 49, 15));
 }
 
 void loop() {
     // Main loop code here
+    DateTime time = rtc.now();
+
+    //Full Timestamp
+    Serial.println(String("DateTime::TIMESTAMP_FULL:\t")+time.timestamp(DateTime::TIMESTAMP_FULL));
+    //Date Only
+    Serial.println(String("DateTime::TIMESTAMP_DATE:\t")+time.timestamp(DateTime::TIMESTAMP_DATE));
+    //Full Timestamp
+    Serial.println(String("DateTime::TIMESTAMP_TIME:\t")+time.timestamp(DateTime::TIMESTAMP_TIME));
+    Serial.println();
+
     display.setBrightness(0x0f); // Set maximum brightness
     display.setSegments(SEG_DONE);
     delay(1000);
