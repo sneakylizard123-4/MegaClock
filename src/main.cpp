@@ -77,6 +77,7 @@ void sevSegTest() {
     delay(1000);
     display.clear();
     delay(1000);
+
     
     display.showNumberDec(1234, false, 4, 0);
     delay(1000);
