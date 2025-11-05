@@ -49,7 +49,7 @@ void setup() {
     }
 
     Serial.println("RTC Initialized.");
-    //rtc.adjust(DateTime(2024, 10, 26, 11, 49, 15));
+    rtc.adjust(DateTime(2024, 11, 4, 21, 35, 0));
 
     Serial.println("Initializing 7-Segment Display...");
     display.setBrightness(0x0f); // Set maximum brightness
