@@ -37,6 +37,7 @@ const uint8_t SEG_OUCH[] = {
 
 void sevSegTest();
 void colorWipe(uint32_t color, int wait);
+void alarm(int durationMs);
 
 void setup() {
     Serial.begin(9600);
@@ -74,6 +75,8 @@ void setup() {
 void loop() {
     // Main loop code here
     DateTime time = rtc.now();
+    int hour = time.hour();
+    int minute = time.minute();
 
     //Full Timestamp
     Serial.println(String("DateTime::TIMESTAMP_FULL:\t")+time.timestamp(DateTime::TIMESTAMP_FULL));
@@ -82,12 +85,9 @@ void loop() {
     display.showNumberDecEx(time.hour(), 0b01000000, true, 2, 0); // Display hours with leading zero
     display.showNumberDec(time.minute(), true, 2, 2); // Display minutes with leading zero
 
-    colorWipe(strip.Color(255, 0, 0), 10); // Red wipe
-    delay(100);
-    colorWipe(strip.Color(0, 255, 0), 10); // Green wipe
-    delay(100);
-    colorWipe(strip.Color(0, 0, 255), 10); // Blue wipe
-    delay(100);
+    if(hour == 22 && minute >= 28) {
+        alarm(10000); // Alarm for 10 seconds
+    }
 }
 
 void sevSegTest() {
@@ -124,4 +124,12 @@ void colorWipe(uint32_t color, int wait) {
     strip.show();                          //  Update strip to match
     delay(wait);                           //  Pause for a moment
   }
+}
+
+void alarm(int durationMs) {
+    unsigned long start = millis();
+    while (millis() - start < durationMs) {
+        colorWipe(strip.Color(255, 0, 0), 20); // Red wipe
+        colorWipe(strip.Color(0, 0, 0), 20);   // Off wipe
+    }
 }
