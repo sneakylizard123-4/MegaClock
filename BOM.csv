@@ -2,3 +2,4 @@ item,descripton,quantity
 Mega 2560,mcu,1
 TM1637,display,1
 DS1307,rtc,1
+Neopixels,led strip,1
