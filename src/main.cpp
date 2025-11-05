@@ -85,7 +85,7 @@ void loop() {
     display.showNumberDecEx(time.hour(), 0b01000000, true, 2, 0); // Display hours with leading zero
     display.showNumberDec(time.minute(), true, 2, 2); // Display minutes with leading zero
 
-    if(hour == 22 && minute >= 28) {
+    if(hour == 4 && minute >= 15) {
         alarm(10000); // Alarm for 10 seconds
     }
 }
