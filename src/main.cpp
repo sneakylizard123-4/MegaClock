@@ -1,12 +1,17 @@
 #include <Arduino.h>
 #include <TM1637Display.h>
 #include <RTClib.h>
+#include <Adafruit_NeoPixel.h>
 
 #define CLK_PIN 2
 #define DIO_PIN 3
 
+#define LED_PIN 6
+#define LED_COUNT 32
+
 TM1637Display display(CLK_PIN, DIO_PIN);
 RTC_DS1307 rtc;
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 const uint8_t SEG_DONE[] = {
 	SEG_B | SEG_C | SEG_D | SEG_E | SEG_G,           // d
@@ -49,11 +54,17 @@ void setup() {
     }
 
     Serial.println("RTC Initialized.");
-    rtc.adjust(DateTime(2024, 11, 4, 21, 35, 0));
+    //rtc.adjust(DateTime(2024, 11, 4, 21, 35, 0));
 
     Serial.println("Initializing 7-Segment Display...");
     display.setBrightness(0x0f); // Set maximum brightness
     Serial.println("7-Segment Display Initialized.");
+
+    Serial.println("Initializing NeoPixel Strip...");
+    strip.begin();
+    strip.show(); // Initialize all pixels to 'off'
+    strip.setBrightness(50); // Set brightness (0-255)
+    Serial.println("NeoPixel Strip Initialized.");
 }
 
 void loop() {
@@ -66,6 +77,12 @@ void loop() {
 
     display.showNumberDecEx(time.hour(), 0b01000000, true, 2, 0); // Display hours with leading zero
     display.showNumberDec(time.minute(), true, 2, 2); // Display minutes with leading zero
+
+    for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
+        strip.setPixelColor(i, strip.Color(127, 127, 127));         //  Set pixel's color (in RAM)
+        strip.show();                          //  Update strip to match
+        delay(50);                           //  Pause for a moment
+    }
 }
 
 void sevSegTest() {
