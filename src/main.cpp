@@ -82,11 +82,11 @@ void loop() {
     display.showNumberDecEx(time.hour(), 0b01000000, true, 2, 0); // Display hours with leading zero
     display.showNumberDec(time.minute(), true, 2, 2); // Display minutes with leading zero
 
-    colorWipe(strip.Color(0, 0, 255), 50); // Blue wipe
+    colorWipe(strip.Color(255, 0, 0), 10); // Red wipe
     delay(100);
-    colorWipe(strip.Color(0, 255, 0), 50); // Green wipe
+    colorWipe(strip.Color(0, 255, 0), 10); // Green wipe
     delay(100);
-    colorWipe(strip.Color(255, 0, 0), 50); // Red wipe
+    colorWipe(strip.Color(0, 0, 255), 10); // Blue wipe
     delay(100);
 }
 
