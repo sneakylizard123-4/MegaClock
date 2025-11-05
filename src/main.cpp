@@ -34,10 +34,11 @@ const uint8_t SEG_OUCH[] = {
   SEG_C | SEG_E | SEG_F | SEG_G                 // h
 };
 
-
+// Function prototypes
 void sevSegTest();
 void colorWipe(uint32_t color, int wait);
 void alarm(int durationMs);
+// End of function prototypes
 
 void setup() {
     Serial.begin(9600);
