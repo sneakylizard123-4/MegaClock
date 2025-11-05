@@ -34,6 +34,10 @@ const uint8_t SEG_OUCH[] = {
   SEG_C | SEG_E | SEG_F | SEG_G                 // h
 };
 
+
+void sevSegTest();
+void colorWipe(uint32_t color, int wait);
+
 void setup() {
     Serial.begin(9600);
     Serial.println("MegaClock Starting...");
@@ -78,11 +82,12 @@ void loop() {
     display.showNumberDecEx(time.hour(), 0b01000000, true, 2, 0); // Display hours with leading zero
     display.showNumberDec(time.minute(), true, 2, 2); // Display minutes with leading zero
 
-    for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
-        strip.setPixelColor(i, strip.Color(127, 127, 127));         //  Set pixel's color (in RAM)
-        strip.show();                          //  Update strip to match
-        delay(50);                           //  Pause for a moment
-    }
+    colorWipe(strip.Color(0, 0, 255), 50); // Blue wipe
+    delay(100);
+    colorWipe(strip.Color(0, 255, 0), 50); // Green wipe
+    delay(100);
+    colorWipe(strip.Color(255, 0, 0), 50); // Red wipe
+    delay(100);
 }
 
 void sevSegTest() {
@@ -111,4 +116,12 @@ void sevSegTest() {
     display.showNumberHexEx(0xd1, 0, true, 2);
     delay(1000);
     display.clear();
+}
+
+void colorWipe(uint32_t color, int wait) {
+  for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
+    strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
+    strip.show();                          //  Update strip to match
+    delay(wait);                           //  Pause for a moment
+  }
 }
