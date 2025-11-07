@@ -14,7 +14,7 @@ i need to figure out how to use the dots
 maybe add a spinning animation on boot?![PXL_20251026_182216549](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6NTc1NCwicHVyIjoiYmxvYl9pZCJ9fQ==--7e89a7a4a476bd55b5486d26be872ec1a85abe1c/PXL_20251026_182216549.jpg)
   
 
-## 11/6/2025 - nEoPiXeLs  
+## 11/6/2025 9:21 PM - nEoPiXeLs  
 
 added alarm and fixed functions
 i need to fix the brightness, its too bright
@@ -23,5 +23,17 @@ auuaauuuauuaauuauauaaaauu my eyes
 
 im watching networkchuck rn
 i wanna go to defcon sometime
+  
+
+## 11/6/2025 9:22 PM - BLINDNESS  
+
+i looked at the neopixel array
+i can see it burned into my eyes now
+its kind of fun
+
+
+now its not fun
+i cant do my math
+maybe i should find a way to aim it at my eyes but away from my eyes![PXL_20251026_182216549](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6OTA3MiwicHVyIjoiYmxvYl9pZCJ9fQ==--e7354a7de7ffec66404918692df160200137d6d3/PXL_20251026_182216549.jpg)
   
 
