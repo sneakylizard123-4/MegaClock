@@ -14,3 +14,14 @@ i need to figure out how to use the dots
 maybe add a spinning animation on boot?![PXL_20251026_182216549](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6NTc1NCwicHVyIjoiYmxvYl9pZCJ9fQ==--7e89a7a4a476bd55b5486d26be872ec1a85abe1c/PXL_20251026_182216549.jpg)
   
 
+## 11/6/2025 - nEoPiXeLs  
+
+added alarm and fixed functions
+i need to fix the brightness, its too bright
+auuaauuuauuaauuauauaaaauu my eyes
+![PXL_20251026_182216549](https://blueprint.hackclub.com/user-attachments/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6OTA3MSwicHVyIjoiYmxvYl9pZCJ9fQ==--2649e58d383f43f1b5629764cadb26a44ff2bffa/PXL_20251026_182216549.jpg)
+
+im watching networkchuck rn
+i wanna go to defcon sometime
+  
+
