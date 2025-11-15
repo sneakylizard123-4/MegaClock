@@ -48,7 +48,7 @@ const uint8_t SEG_OUCH[] = {
 void sevSegTest();
 void testBuzzer();
 void colorWipe(uint32_t color, int wait);
-void alarm(int durationMs);
+void alarm(unsigned int durationMs);
 // End of function prototypes
 
 void setup() {
@@ -177,7 +177,7 @@ void colorWipe(uint32_t color, int wait) {
   }
 }
 
-void alarm(int durationMs) {
+void alarm(unsigned int durationMs) {
     unsigned long start = millis();
     while (millis() - start < durationMs) {
         digitalWrite(buzzer, HIGH);
