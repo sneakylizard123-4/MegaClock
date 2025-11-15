@@ -3,15 +3,25 @@
 #include <RTClib.h>
 #include <Adafruit_NeoPixel.h>
 
+#define AMPM true // true for 12-hour format, false for 24-hour format
+#if AMPM
+  #warning "Using 12-hour format"
+  bool isPM;
+#else
+  #warning "Using 24-hour format"
+#endif
+
 #define CLK_PIN 2
 #define DIO_PIN 3
 
-#define LED_PIN 6
-#define LED_COUNT 32
+#define NEO_PIN 6
+#define NEO_COUNT 32
+
+#define buzzer 11
 
 TM1637Display display(CLK_PIN, DIO_PIN);
 RTC_DS1307 rtc;
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(NEO_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
 
 const uint8_t SEG_DONE[] = {
 	SEG_B | SEG_C | SEG_D | SEG_E | SEG_G,           // d
@@ -79,16 +89,37 @@ void loop() {
     int hour = time.hour();
     int minute = time.minute();
 
+    if (AMPM) {
+        hour = hour % 12;
+        if (hour == 0) hour = 12; // Handle midnight and noon
+        isPM = time.isPM();
+    }
+
     //Full Timestamp
     Serial.println(String("DateTime::TIMESTAMP_FULL:\t")+time.timestamp(DateTime::TIMESTAMP_FULL));
+    Serial.println(String("Current Time: ")+String(hour)+":"+String(minute, DEC)+(isPM ? " PM" : " AM"));
     Serial.println();
 
-    display.showNumberDecEx(time.hour(), 0b01000000, true, 2, 0); // Display hours with leading zero
-    display.showNumberDec(time.minute(), true, 2, 2); // Display minutes with leading zero
+    // Blink colon for PM
+    display.showNumberDecEx(hour, 0b01000000, true, 2, 0); // Display hours with leading zero
+    display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
+    delay(500);
+    display.showNumberDecEx(hour, 0b00000000, true, 2, 0); // Display hours without colon
+    display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
+    display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
 
-    if(hour == 4 && minute >= 15) {
+    if(hour == 6 && minute >= 15) {
         alarm(10000); // Alarm for 10 seconds
+        delay(10000); // Wait an additional 10 seconds to avoid multiple triggers
     }
+
+    if(isPM) {
+        digitalWrite(13, HIGH); // Turn on PM indicator LED
+    } else {
+        digitalWrite(13, LOW); // Turn off PM indicator LED
+    }
+    
+    delay(500);
 }
 
 void sevSegTest() {
@@ -130,7 +161,9 @@ void colorWipe(uint32_t color, int wait) {
 void alarm(int durationMs) {
     unsigned long start = millis();
     while (millis() - start < durationMs) {
+        digitalWrite(buzzer, HIGH);
         colorWipe(strip.Color(255, 0, 0), 20); // Red wipe
+        digitalWrite(buzzer, LOW);
         colorWipe(strip.Color(0, 0, 0), 20);   // Off wipe
     }
 }
