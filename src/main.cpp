@@ -46,6 +46,7 @@ const uint8_t SEG_OUCH[] = {
 
 // Function prototypes
 void sevSegTest();
+void testBuzzer();
 void colorWipe(uint32_t color, int wait);
 void alarm(int durationMs);
 // End of function prototypes
@@ -81,6 +82,13 @@ void setup() {
     strip.show(); // Initialize all pixels to 'off'
     strip.setBrightness(50); // Set brightness (0-255)
     Serial.println("NeoPixel Strip Initialized.");
+
+    Serial.println("Initializing Buzzer...");
+    pinMode(buzzer, OUTPUT);
+    digitalWrite(buzzer, LOW); // Ensure buzzer is off
+    Serial.println("Testing Buzzer...");
+    testBuzzer();
+    Serial.println("Buzzer Initialized.");
 }
 
 void loop() {
@@ -148,6 +156,17 @@ void sevSegTest() {
     display.showNumberHexEx(0xd1, 0, true, 2);
     delay(1000);
     display.clear();
+}
+
+void testBuzzer() {
+    Serial.println("Testing Buzzer...");
+    for (int i = 0; i < 3; i++) {
+        digitalWrite(buzzer, HIGH);
+        delay(50);
+        digitalWrite(buzzer, LOW);
+        delay(50);
+    }
+    Serial.println("Buzzer Test Complete.");
 }
 
 void colorWipe(uint32_t color, int wait) {
