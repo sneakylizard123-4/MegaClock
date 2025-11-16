@@ -81,6 +81,7 @@ void setup() {
     strip.begin();
     strip.show(); // Initialize all pixels to 'off'
     strip.setBrightness(50); // Set brightness (0-255)
+    strip.show();
     Serial.println("NeoPixel Strip Initialized.");
 
     Serial.println("Initializing Buzzer...");
