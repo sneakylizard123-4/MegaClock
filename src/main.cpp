@@ -5,10 +5,11 @@
 
 #define AMPM true // true for 12-hour format, false for 24-hour format
 #if AMPM
-  #warning "Using 12-hour format"
   bool isPM;
+  bool ampm = true;
 #else
-  #warning "Using 24-hour format"
+  // no need for isPM bool cos its 24h
+  bool ampm = false;
 #endif
 
 #define CLK_PIN 2
@@ -45,6 +46,7 @@ const uint8_t SEG_OUCH[] = {
 };
 
 // Function prototypes
+void warn();
 void sevSegTest();
 void testBuzzer();
 void colorWipe(uint32_t color, int wait);
@@ -117,7 +119,7 @@ void loop() {
     display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
     display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
 
-    if(hour == 6 && minute >= 15) {
+    if(hour == 7 && minute >= 15 && minute <= 20) {
         alarm(10000); // Alarm for 10 seconds
         delay(10000); // Wait an additional 10 seconds to avoid multiple triggers
     }
@@ -129,6 +131,14 @@ void loop() {
     }
     
     delay(500);
+}
+
+void warn() {
+    if(ampm == true) {
+        Serial.println("Using 12-Hour format");
+    } else {
+        Serial.println("Using 24-Hour format");
+    }
 }
 
 void sevSegTest() {
@@ -160,18 +170,16 @@ void sevSegTest() {
 }
 
 void testBuzzer() {
-    Serial.println("Testing Buzzer...");
     for (int i = 0; i < 3; i++) {
         digitalWrite(buzzer, HIGH);
         delay(50);
         digitalWrite(buzzer, LOW);
         delay(50);
     }
-    Serial.println("Buzzer Test Complete.");
 }
 
 void colorWipe(uint32_t color, int wait) {
-  for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
+  for(unsigned int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
     strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
     strip.show();                          //  Update strip to match
     delay(wait);                           //  Pause for a moment
