@@ -92,6 +92,8 @@ void setup() {
     Serial.println("Testing Buzzer...");
     testBuzzer();
     Serial.println("Buzzer Initialized.");
+
+    warn(); // Warn about time format
 }
 
 void loop() {
