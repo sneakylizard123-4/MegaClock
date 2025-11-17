@@ -46,7 +46,11 @@ const uint8_t SEG_OUCH[] = {
 };
 
 // Function prototypes
-void warn();
+void boot();
+void pass(int i);
+void fail(int i);
+void warn(int i);
+void AmPmNotify();
 void sevSegTest();
 void testBuzzer();
 void colorWipe(uint32_t color, int wait);
@@ -56,44 +60,7 @@ void alarm(unsigned int durationMs);
 void setup() {
     Serial.begin(9600);
     Serial.println("MegaClock Starting...");
-    Serial.println("Initializing RTC...");
-
-    if (rtc.begin()) {
-        Serial.println("RTC Ok");
-    } else {
-        Serial.println("RTC not found.");
-        while(1);
-    }
-
-    if (rtc.isrunning()) {
-        Serial.println("RTC is running.");
-    } else{
-        Serial.println("RTC is NOT running, setting the time!");
-        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    }
-
-    Serial.println("RTC Initialized.");
-    //rtc.adjust(DateTime(2024, 11, 4, 21, 35, 0));
-
-    Serial.println("Initializing 7-Segment Display...");
-    display.setBrightness(0x0f); // Set maximum brightness
-    Serial.println("7-Segment Display Initialized.");
-
-    Serial.println("Initializing NeoPixel Strip...");
-    strip.begin();
-    strip.show(); // Initialize all pixels to 'off'
-    strip.setBrightness(50); // Set brightness (0-255)
-    strip.show();
-    Serial.println("NeoPixel Strip Initialized.");
-
-    Serial.println("Initializing Buzzer...");
-    pinMode(buzzer, OUTPUT);
-    digitalWrite(buzzer, LOW); // Ensure buzzer is off
-    Serial.println("Testing Buzzer...");
-    testBuzzer();
-    Serial.println("Buzzer Initialized.");
-
-    warn(); // Warn about time format
+    boot();
 }
 
 void loop() {
@@ -135,7 +102,89 @@ void loop() {
     delay(500);
 }
 
-void warn() {
+void boot() {
+    Serial.println("Initializing NeoPixels...");
+    if (!strip.begin()) {
+        Serial.println("Neopixels Initialization FAILED!!!");
+        warn(0);
+    }
+    strip.show();
+    strip.setBrightness(10);
+    strip.show();
+    fail(0);
+    delay(500);
+    warn(0);
+    delay(500);
+    pass(0);
+    delay(500);
+    strip.clear();
+    strip.setPixelColor(0, strip.Color(0, 0, 255));
+    strip.show();
+    Serial.println("NeoPixels Initialized.");
+    pass(1);
+
+    Serial.println("Initializing 7-Segment Display...");
+    display.setBrightness(0x0f); // Set maximum blindness
+    Serial.println("7-Segment Display Initialized");
+    pass(2);
+
+    Serial.println("Initializing RTC...");
+
+    if (rtc.begin()) {
+        Serial.println("RTC Ok");
+        pass(3);
+    } else {
+        Serial.println("RTC not found.");
+        fail(3);
+        while(1);
+    }
+
+    if (rtc.isrunning()) {
+        Serial.println("RTC is running.");
+        pass(4);
+    } else{
+        Serial.println("RTC is NOT running, setting the time!");
+        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+        warn(4);
+    }
+
+    Serial.println("RTC Initialized.");
+    //rtc.adjust(DateTime(2024, 11, 4, 21, 35, 0));
+
+    Serial.println("Initializing Buzzer...");
+    pinMode(buzzer, OUTPUT);
+    digitalWrite(buzzer, LOW); // Ensure buzzer is off
+    Serial.println("Testing Buzzer...");
+    testBuzzer();
+    Serial.println("Buzzer Initialized.");
+    pass(5);
+
+    AmPmNotify(); // Warn about time format
+    warn(6);
+
+    delay(100);
+    colorWipe(strip.Color(0, 0, 255), 20);
+    colorWipe(strip.Color(0, 0, 0), 20);
+    strip.setBrightness(50);
+    strip.show();
+}
+
+void pass(int i) {
+    strip.setPixelColor(i, strip.Color(0, 255, 0));
+    strip.show();
+}
+
+void fail(int i) {
+    strip.setPixelColor(i, strip.Color(255, 0, 0));
+    strip.show();
+}
+
+void warn(int i) {
+    strip.setPixelColor(i, strip.Color(128, 128, 0));
+    strip.show();
+}
+
+void AmPmNotify() {
     if(ampm == true) {
         Serial.println("Using 12-Hour format");
     } else {
@@ -172,7 +221,7 @@ void sevSegTest() {
 }
 
 void testBuzzer() {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
         digitalWrite(buzzer, HIGH);
         delay(50);
         digitalWrite(buzzer, LOW);
