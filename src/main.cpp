@@ -162,7 +162,7 @@ void boot() {
     AmPmNotify(); // Warn about time format
     warn(6);
 
-    delay(100);
+    delay(1000);
     colorWipe(strip.Color(0, 0, 255), 20);
     colorWipe(strip.Color(0, 0, 0), 20);
     strip.setBrightness(50);
