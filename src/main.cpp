@@ -100,13 +100,6 @@ void loop() {
     }
     display.showNumberDec(minute, true, 2, 2);
 
-    // display.showNumberDecEx(hour, 0b01000000, true, 2, 0); // Display hours with leading zero
-    //display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
-    //delay(500); <- replaced with MuLtItAsKiNg!
-    //display.showNumberDecEx(hour, 0b00000000, true, 2, 0); // Display hours without colon
-    //display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
-    //display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
-
     if(hour == 7 && minute >= 15 && minute <= 20 && isPM == false) {
         alarm(10000); // Alarm for 10 seconds
         delay(10000); // Wait an additional 10 seconds to avoid multiple triggers
