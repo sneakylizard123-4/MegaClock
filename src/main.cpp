@@ -12,6 +12,11 @@
   bool ampm = false;
 #endif
 
+bool segDotsState; // colon for 7seg blinking
+unsigned long previousMillisSegDots = 0;
+unsigned long segDotsOnTime = 500;
+unsigned long segDotsOffTime = 500;
+
 #define CLK_PIN 2
 #define DIO_PIN 3
 
@@ -65,6 +70,9 @@ void setup() {
 
 void loop() {
     // Main loop code here
+    unsigned long currentMillis = millis();
+    // ^ needed for multitasking
+
     DateTime time = rtc.now();
     int hour = time.hour();
     int minute = time.minute();
@@ -81,12 +89,23 @@ void loop() {
     Serial.println();
 
     // Blink colon for PM
-    display.showNumberDecEx(hour, 0b01000000, true, 2, 0); // Display hours with leading zero
-    display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
-    delay(500);
-    display.showNumberDecEx(hour, 0b00000000, true, 2, 0); // Display hours without colon
-    display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
-    display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
+    if((segDotsState == HIGH) && (currentMillis - previousMillisSegDots >= segDotsOnTime)) {
+        segDotsState = LOW;
+        previousMillisSegDots = currentMillis;
+        display.showNumberDecEx(hour, 0b01000000, true, 2, 0); // Display hours with leading zero
+    } else if ((segDotsState == LOW) && (currentMillis - previousMillisSegDots >= segDotsOffTime)) {
+        segDotsState = HIGH;
+        previousMillisSegDots = currentMillis;
+        display.showNumberDecEx(hour, 0b00000000, true, 2, 0); // Display hours without colon
+    }
+    display.showNumberDec(minute, true, 2, 2);
+
+    // display.showNumberDecEx(hour, 0b01000000, true, 2, 0); // Display hours with leading zero
+    //display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
+    //delay(500); <- replaced with MuLtItAsKiNg!
+    //display.showNumberDecEx(hour, 0b00000000, true, 2, 0); // Display hours without colon
+    //display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
+    //display.showNumberDec(minute, true, 2, 2); // Display minutes with leading zero
 
     if(hour == 7 && minute >= 15 && minute <= 20 && isPM == false) {
         alarm(10000); // Alarm for 10 seconds
@@ -156,7 +175,7 @@ void boot() {
     }
 
     Serial.println("RTC Initialized.");
-    //rtc.adjust(DateTime(2024, 11, 4, 21, 35, 0));
+    //rtc.adjust(DateTime(2025, 11, 17, 21, 5, 0));
 
     Serial.println("Initializing Buzzer...");
     pinMode(buzzer, OUTPUT);
