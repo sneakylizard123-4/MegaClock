@@ -125,6 +125,13 @@ void boot() {
 
     Serial.println("Initializing 7-Segment Display...");
     display.setBrightness(0x0f); // Set maximum blindness
+    display.setSegments(SEG_DONE);
+    delay(500);
+    display.setBrightness(0x01);
+    display.setSegments(SEG_TRUE);
+    delay(500);
+    display.setBrightness(0x0f);
+    display.clear();
     Serial.println("7-Segment Display Initialized");
     pass(2);
 
