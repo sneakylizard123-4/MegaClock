@@ -17,6 +17,11 @@ unsigned long previousMillisSegDots = 0;
 unsigned long segDotsOnTime = 500;
 unsigned long segDotsOffTime = 500;
 
+bool alarmState = false;
+unsigned long previousMillisAlarm = 0;
+unsigned long alarmOnTime = 1000;
+unsigned long alarmOffTime = 1000;
+
 #define CLK_PIN 2
 #define DIO_PIN 3
 
@@ -103,6 +108,17 @@ void loop() {
     if(hour == 7 && minute >= 15 && minute <= 20 && isPM == false) {
         alarm(10000); // Alarm for 10 seconds
         delay(10000); // Wait an additional 10 seconds to avoid multiple triggers
+        // ADD MULTITASKING
+        // ontime 10000
+        // offtime 10000
+        if((alarmState == HIGH) && (currentMillis - previousMillisAlarm >= alarmOnTime)) {
+            alarmState = LOW;
+            previousMillisAlarm = currentMillis;
+        } else if ((alarmState == LOW) && (currentMillis - previousMillisAlarm >= alarmOffTime)) {
+            alarmState = HIGH;
+            previousMillisAlarm = currentMillis;
+            alarm(10000); // Turn on buzzer
+        }
     }
 
     if(isPM) {
