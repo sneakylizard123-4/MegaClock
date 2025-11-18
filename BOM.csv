@@ -1,6 +1,6 @@
-item     , descripton  , quantity
-Mega 2560, mcu         ,        1
-TM1637   , display     ,        1
-DS1307   , rtc         ,        1
-Neopixels, led strip   ,        1
-buzzer   , sound module,        1
+Item     , Descripton    , Quantity
+Mega 2560, MCU           ,        1
+TM1637   , 7-Seg Display ,        1
+DS1307   , RTC module    ,        1
+Neopixels, NeoPixel Strip,        1
+buzzer   , Bzzz Bzzz     ,        1
