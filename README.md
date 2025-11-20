@@ -1,5 +1,7 @@
 # MegaClock
 Very wow
+
+## Pictures
 ![IMG_20251118_215700](https://github.com/user-attachments/assets/24ad5222-2d82-4053-9fe8-b18242c6ff75)
 
 
