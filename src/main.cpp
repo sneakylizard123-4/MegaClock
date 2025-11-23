@@ -28,7 +28,8 @@ unsigned long alarmOffTime = 1000;
 #define NEO_PIN 6
 #define NEO_COUNT 32
 
-#define buzzer 11
+#define buzzerPos 11
+#define buzzerNeg 8
 
 TM1637Display display(CLK_PIN, DIO_PIN);
 RTC_DS1307 rtc;
@@ -184,15 +185,17 @@ void boot() {
     }
 
     Serial.println("RTC Initialized.");
-    //rtc.adjust(DateTime(2025, 11, 17, 21, 5, 0));
+    //rtc.adjust(DateTime(2025, 11, 23, 10, 11, 30));
 
     Serial.println("Initializing Buzzer...");
-    pinMode(buzzer, OUTPUT);
-    digitalWrite(buzzer, LOW); // Ensure buzzer is off
+    pinMode(buzzerPos, OUTPUT);
+    pinMode(buzzerNeg, INPUT);
+    digitalWrite(buzzerPos, LOW); // Ensure buzzer is off
+    digitalWrite(buzzerNeg, LOW);
     Serial.println("Testing Buzzer...");
     testBuzzer();
+    // ^ already has pass/fail inside
     Serial.println("Buzzer Initialized.");
-    pass(5);
 
     AmPmNotify(); // Warn about time format
     warn(6);
@@ -257,10 +260,22 @@ void sevSegTest() {
 
 void testBuzzer() {
     for (int i = 0; i < 2; i++) {
-        digitalWrite(buzzer, HIGH);
+        bool value;
+        digitalWrite(buzzerPos, HIGH);
+        value = digitalRead(buzzerNeg);
         delay(50);
-        digitalWrite(buzzer, LOW);
+        digitalWrite(buzzerPos, LOW);
         delay(50);
+        Serial.print("value: ");
+        Serial.print(value);
+        Serial.println(String("Buzzer Test Cycle ")+String(i+1)+String(": Pos HIGH, Neg reads ")+String(value ? "HIGH" : "LOW"));
+        if(value == HIGH) {
+            Serial.println("Buzzer FAIL to respond!");
+            fail(5);
+        } else {
+            Serial.println("Buzzer PASS to respond!");
+            pass(5);
+        }
     }
 }
 
@@ -275,9 +290,11 @@ void colorWipe(uint32_t color, int wait) {
 void alarm(unsigned int durationMs) {
     unsigned long start = millis();
     while (millis() - start < durationMs) {
-        digitalWrite(buzzer, HIGH);
+        digitalWrite(buzzerPos, HIGH);
+        digitalWrite(buzzerNeg, LOW);
         colorWipe(strip.Color(255, 0, 0), 20); // Red wipe
-        digitalWrite(buzzer, LOW);
+        digitalWrite(buzzerPos, LOW);
+        digitalWrite(buzzerNeg, LOW);
         colorWipe(strip.Color(0, 0, 0), 20);   // Off wipe
     }
 }
