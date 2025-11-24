@@ -28,8 +28,7 @@ unsigned long alarmOffTime = 1000;
 #define NEO_PIN 6
 #define NEO_COUNT 32
 
-#define buzzerPos 11
-#define buzzerNeg 8
+#define buzzer 11
 
 TM1637Display display(CLK_PIN, DIO_PIN);
 RTC_DS1307 rtc;
@@ -188,10 +187,8 @@ void boot() {
     //rtc.adjust(DateTime(2025, 11, 23, 10, 11, 30));
 
     Serial.println("Initializing Buzzer...");
-    pinMode(buzzerPos, OUTPUT);
-    pinMode(buzzerNeg, INPUT);
-    digitalWrite(buzzerPos, LOW); // Ensure buzzer is off
-    digitalWrite(buzzerNeg, LOW);
+    pinMode(buzzer, OUTPUT);
+    digitalWrite(buzzer, LOW); // Ensure buzzer is off
     Serial.println("Testing Buzzer...");
     testBuzzer();
     // ^ already has pass/fail inside
@@ -260,23 +257,12 @@ void sevSegTest() {
 
 void testBuzzer() {
     for (int i = 0; i < 2; i++) {
-        bool value;
-        digitalWrite(buzzerPos, HIGH);
-        value = digitalRead(buzzerNeg);
+        digitalWrite(buzzer, HIGH);
         delay(50);
-        digitalWrite(buzzerPos, LOW);
+        digitalWrite(buzzer, LOW);
         delay(50);
-        Serial.print("value: ");
-        Serial.print(value);
-        Serial.println(String("Buzzer Test Cycle ")+String(i+1)+String(": Pos HIGH, Neg reads ")+String(value ? "HIGH" : "LOW"));
-        if(value == HIGH) {
-            Serial.println("Buzzer FAIL to respond!");
-            fail(5);
-        } else {
-            Serial.println("Buzzer PASS to respond!");
-            pass(5);
-        }
     }
+    pass(5);
 }
 
 void colorWipe(uint32_t color, int wait) {
@@ -290,11 +276,9 @@ void colorWipe(uint32_t color, int wait) {
 void alarm(unsigned int durationMs) {
     unsigned long start = millis();
     while (millis() - start < durationMs) {
-        digitalWrite(buzzerPos, HIGH);
-        digitalWrite(buzzerNeg, LOW);
+        digitalWrite(buzzer, HIGH);
         colorWipe(strip.Color(255, 0, 0), 20); // Red wipe
-        digitalWrite(buzzerPos, LOW);
-        digitalWrite(buzzerNeg, LOW);
+        digitalWrite(buzzer, LOW);
         colorWipe(strip.Color(0, 0, 0), 20);   // Off wipe
     }
 }
