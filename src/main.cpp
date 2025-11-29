@@ -55,7 +55,7 @@ const uint8_t SEG_OUCH[] = {
   SEG_C | SEG_E | SEG_F | SEG_G                 // h
 };
 
-// Function prototypes
+// Function declarations
 void boot();
 void pass(int i);
 void fail(int i);
@@ -65,6 +65,8 @@ void sevSegTest();
 void testBuzzer();
 void colorWipe(uint32_t color, int wait);
 void alarm(unsigned int durationMs);
+void changeSegBrightness(uint8_t brightness);
+void calculateBrightness(int input);
 // End of function prototypes
 
 void setup() {
@@ -78,6 +80,8 @@ void loop() {
     unsigned long currentMillis = millis();
     // ^ needed for multitasking
 
+    /// @brief Retrieves the current date and time from the real-time clock (RTC).
+    /// @return A DateTime object containing the current date and time.
     DateTime time = rtc.now();
     int hour = time.hour();
     int minute = time.minute();
@@ -93,7 +97,14 @@ void loop() {
     Serial.println(String("Current Time: ")+String(hour)+":"+String(minute, DEC)+(isPM ? " PM" : " AM"));
     Serial.println();
 
-    // Blink colon for PM
+        
+    //Serial.print(String("time.hour: ") + String(time.hour(), DEC));
+    //Serial.println();
+    //uint32_t secondsTime = time.secondstime();
+    //DateTime acceleratedTime = DateTime(secondsTime *60*60); // Add one hour
+    calculateBrightness(time.hour()); // Example: adjust brightness based on hour
+
+    // Blink colon
     if((segDotsState == HIGH) && (currentMillis - previousMillisSegDots >= segDotsOnTime)) {
         segDotsState = LOW;
         previousMillisSegDots = currentMillis;
@@ -126,7 +137,7 @@ void loop() {
     } else {
         digitalWrite(13, LOW); // Turn off PM indicator LED
     }
-    
+
     delay(500);
 }
 
@@ -152,13 +163,13 @@ void boot() {
     pass(1);
 
     Serial.println("Initializing 7-Segment Display...");
-    display.setBrightness(0x0f); // Set maximum blindness
+    display.setBrightness(0x07); // Set maximum blindness
     display.setSegments(SEG_DONE);
     delay(500);
     display.setBrightness(0x01);
     display.setSegments(SEG_TRUE);
     delay(500);
-    display.setBrightness(0x0f);
+    display.setBrightness(0x07);
     display.clear();
     Serial.println("7-Segment Display Initialized");
     pass(2);
@@ -282,3 +293,52 @@ void alarm(unsigned int durationMs) {
         colorWipe(strip.Color(0, 0, 0), 20);   // Off wipe
     }
 }
+
+void changeSegBrightness(uint8_t brightness) {
+    if (brightness > 0x07) brightness = 0x07; // Max brightness is 0x07
+    display.setBrightness(brightness);
+}
+
+void calculateBrightness(int input) {
+    // Example: Map input range 0-23 to brightness range 0x00-0x07
+    const int noonHour = 12;
+    int brightness;
+    if (input <= noonHour) {
+        brightness = map(input, 0, noonHour, 0x00, 0x07);
+    } else {
+        brightness = map(input, noonHour, 23, 0x07, 0x00);
+    }
+    changeSegBrightness(brightness);
+    Serial.println(String("Input value: ") + String(input, DEC));
+    Serial.println(String("Brightness set to: ") + String(brightness, DEC));
+}
+/*
+int calculateBrightnessAlt(int inputValue) {
+if (inputValue < 0) inputValue = 0;
+if (inputValue > 24) inputValue = 24;
+
+// Linear mapping formula: output = ((input - inputMin) * (outputMax - outputMin))
+/ (inputMax - inputMin) + outputMin
+int brightness = (inputValue * 14) / 24 + 1;
+
+return brightness;
+}
+*/
+/*
+void calculateBrightness(int hour, int minute) {
+  double t = (hour % 24) + minute / 60.0; // 0..24
+  const double PI = 3.141592653589793;
+  double v = 0.5 * (cos((t - 12.0) / 24.0 * 2.0 * PI) + 1.0); // 0..1
+  // Gamma correction for perceived brightness (optional)
+  const double gamma = 2.2;
+  v = pow(v, 1.0 / gamma);
+  // 7-seg
+  int segB = (int)round(v * 0x07);
+  if (segB < 0) segB = 0; if (segB > 0x07) segB = 0x07;
+  changeSegBrightness((uint8_t)segB);
+  // NeoPixel (optional)
+  uint8_t neoB = (uint8_t)round(v * 255.0);
+  strip.setBrightness(neoB);
+  strip.show();
+}
+*/
